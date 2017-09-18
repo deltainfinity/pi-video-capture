@@ -49,6 +49,7 @@ namespace PiVideoClient
                 //get the network stream and write the stream to a file
                 piVideoStream = piClient.GetStream();
                 byte[] data = new byte[4192];
+                videoName = CreateFileName();
                 using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(storagePath + '\\' + videoName)))
                 {
                     while (piVideoStream.CanRead)
@@ -57,13 +58,20 @@ namespace PiVideoClient
                         bw.Write(data);
                     }
                 }
-                
                 piVideoStream.Close();
             }
             finally
             { 
                 piClient.Close();
             }
+        }
+
+        private string CreateFileName()
+        {
+            System.DateTime fileCreateTime = System.DateTime.Now;
+            string fName = fileCreateTime.ToString("MM-dd-yyyy-hh-mm-ss-FFFFF");
+            fName = fName + ".h264";
+            return fName;
         }
     }
 }
